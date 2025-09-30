@@ -16,13 +16,13 @@ An E-Commerce web application built with the MERN (MongoDB, Express.js, React.js
 - 🌐 Fully responsive frontend
 
 ## 🧑‍💻 Technologies Used
-- Frontend : React.js
-             React Router
+- Frontend : React.js,
+             React Router,
              Redux / Context
-- Backend :  Node.js
+- Backend :  Node.js,
              Express.js
-- Database : MongoDB
+- Database : MongoDB,
              Mongoose
-- Others :   JWT Authentication
-             Stripe API
+- Others :   JWT Authentication,
+             Stripe API,
              dotenv, multer
