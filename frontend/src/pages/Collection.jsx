@@ -5,55 +5,81 @@ import Title from '../components/Title';
 import Productitem from '../components/ProductItem';
 
 const Collection = () => {
-  const { products } = useContext(ShopContext);
+
+  const { products , search , showSearch } = useContext(ShopContext);
   const [showFilter, setShowFilter] = useState(true);
   const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
-  const [sortOption, setSortOption] = useState('relevant');
+  const [sortType, setSortType] = useState('relevant');
 
   const toggleCategory = (e) => {
+
     if (category.includes(e.target.value)) {
       setCategory(prev => prev.filter(item => item !== e.target.value));
-    } else {
+    }
+     else {
       setCategory(prev => [...prev, e.target.value]);
     }
-  };
+
+  }
 
   const toggleSubCategory = (e) => {
+
     if (subCategory.includes(e.target.value)) {
       setSubCategory(prev => prev.filter(item => item !== e.target.value));
-    } else {
+    } 
+    else {
       setSubCategory(prev => [...prev, e.target.value]);
     }
-  };
+  }
 
   const applyFilter = () => {
-    let productsCopy = [...products];
 
-    if (category.length > 0) {
+    let productsCopy = products.slice();
+
+    if (showSearch && search){
+      productsCopy = productsCopy.filter(item => item.name.toLowerCase().includes(search.toLowerCase()));
+    }
+    if(category.length > 0){
       productsCopy = productsCopy.filter(item => category.includes(item.category));
     }
-    if (subCategory.length > 0) {
+
+    if(subCategory.length > 0){
       productsCopy = productsCopy.filter(item => subCategory.includes(item.subCategory));
     }
 
-    if (sortOption === 'low-high') {
-      productsCopy.sort((a, b) => a.price - b.price);
-    } else if (sortOption === 'high-low') {
-      productsCopy.sort((a, b) => b.price - a.price);
-    }
 
     setFilterProducts(productsCopy);
   };
 
-  useEffect(() => {
-    setFilterProducts(products);
-  }, [products]);
+  const sortProduct = () => {
+
+    let fpCopy = filterProducts.slice();
+
+    switch (sortType) {
+      case 'low-high':
+        setFilterProducts(fpCopy.sort((a,b)=>(a.price - b.price)));
+        break;
+
+        case 'high-low':
+        setFilterProducts(fpCopy.sort((a,b)=>(b.price - a.price)));
+        break;
+
+        default:
+          applyFilter();
+          break;
+    }
+  }
+
 
   useEffect(() => {
     applyFilter();
-  }, [category, subCategory, sortOption]);
+  }, [category,subCategory,search,showSearch,products]);
+
+  useEffect(() => {
+    sortProduct();
+  }, [sortType]);
 
   return (
     <div className='flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t'>
@@ -96,7 +122,7 @@ const Collection = () => {
           <Title text1={'ALL'} text2={'COLLECTION'} />
           <select
             className='border-2 border-gray-300 text-sm px-2'
-            value={sortOption}
+            value={sortType}
             onChange={(e) => setSortOption(e.target.value)}
           >
             <option value="relevant">Sort by: Relevant</option>
